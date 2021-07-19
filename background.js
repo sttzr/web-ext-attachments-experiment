@@ -19,7 +19,7 @@ const PREVIEW_HEIGHT = PREVIEW_WIDTH * 1.5;
  */
 async function addInlinePreviews(tabId, messageId) {
   // Get a list of all attachments.
-  let attachments = await browser.messages.listAttachments(messageId);
+  let attachments = await browser.attachments_tb78.listAttachments(messageId);
   let loadingSpinnerShown = false;
 
   for (let attachment of attachments) {
@@ -37,7 +37,7 @@ async function addInlinePreviews(tabId, messageId) {
     }
 
     // Get the requested attachment.
-    let file = await browser.messages.getAttachmentFile(
+    let file = await browser.attachments_tb78.getAttachmentFile(
       messageId,
       attachment.partName
     );
