@@ -1,13 +1,13 @@
 {
-    "name": "PDF Preview",
-    "description": "Preview your pdf and your images !",
+    "name": "Attachment API demo: Preview attached images inside message display",
+    "description": "Try out the attachment api in Thunderbird 78! Renders previews for attached images into message display. Based on https://github.com/thundernest/sample-extensions/tree/master/messageDisplayScriptPdfPreview and https://phabricator.services.mozilla.com/D107403",
     "manifest_version": 2,
     "version": "1.0",
-    "author": "rom.holec@gmail.com,edouard@e-gaulue.com",
+    "author": "github.com/sttzr,rom.holec@gmail.com,edouard@e-gaulue.com",
     "applications": {
         "gecko": {
-            "id": "pdfPreviewInMsg@sample.extensions.thunderbird.net",
-            "strict_min_version": "88.0"
+            "id": "web-ext-attachments-experiment@sttzr.github.com",
+            "strict_min_version": "78.0"
         }
     },
     "permissions": [
@@ -16,15 +16,29 @@
     ],
     "background": {
         "scripts": [
-            "pdf.js",
-            "pdf.worker.js",
             "background.js"
         ]
     },
 
     "icons": {
-        "16": "pdficon.png",
-        "32": "pdficon.png",
-        "64": "pdficon.png"
+        "16": "addon-icon.png",
+        "32": "addon-icon.png",
+        "64": "addon-icon.png"
+    },
+    "experiment_apis": {
+      "attachments_tb78": {
+        "schema": "attachments_tb78/schema.json",
+        "parent": {
+          "scopes": [
+            "addon_parent"
+          ],
+          "paths": [
+            [
+              "attachments_tb78"
+            ]
+          ],
+          "script": "attachments_tb78/implementation.js"
+        }
+      }
     }
 }
