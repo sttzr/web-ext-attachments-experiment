@@ -49,16 +49,6 @@ browser.runtime.onMessage.addListener((data, sender) => {
     image.style["margin-bottom"] = "10px";
     image.style.border = "1px solid black";
 
-    image.addEventListener("click", event => {
-      // Open a bigger popup preview, when the preview image has been clicked.
-      browser.runtime.sendMessage({
-        command: "openPopupPreview",
-        partName: data.partName,
-        pageNumber: data.pageNumber,
-        messageId: data.messageId,
-      });
-    });
-
     // Add the image before the last element.
     document
       .getElementById("secondDiv")
