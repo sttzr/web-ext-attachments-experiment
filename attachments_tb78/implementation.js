@@ -91,13 +91,18 @@
              );
            }
            console.log("attachment", attachment);
- 
+           let aSecurityFlags =
+             Ci.nsILoadInfo.SEC_ALLOW_CROSS_ORIGIN_DATA_IS_NULL || // for TB Beta 80 and newer
+             Ci.nsILoadInfo.SEC_ALLOW_CROSS_ORIGIN_SEC_CONTEXT_IS_NULL; // for TB 78
+             // see https://developer.thunderbird.net/add-ons/updating/tb91/changes#nsiloadinfo-sec_allow_cross_origin_data_is_null
+             
            let channel = Services.io.newChannelFromURI(
              Services.io.newURI(attachment.url),
              null,
              Services.scriptSecurityManager.getSystemPrincipal(),
              null,
-             Ci.nsILoadInfo.SEC_ALLOW_CROSS_ORIGIN_SEC_CONTEXT_IS_NULL,
+             
+             aSecurityFlags,
              Ci.nsIContentPolicy.TYPE_OTHER
            );
  
