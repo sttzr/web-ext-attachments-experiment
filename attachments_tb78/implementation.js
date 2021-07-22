@@ -4,16 +4,8 @@
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
- var { MailServices } = ChromeUtils.import("resource:///modules/MailServices.jsm");
- var { MessageArchiver } = ChromeUtils.import("resource:///modules/MessageArchiver.jsm");
- var { MimeParser } = ChromeUtils.import("resource:///modules/mimeParser.jsm");
  var { MsgHdrToMimeMessage } = ChromeUtils.import("resource:///modules/gloda/MimeMessage.jsm");
- var { NetUtil } = ChromeUtils.import("resource://gre/modules/NetUtil.jsm");
- var { jsmime } = ChromeUtils.import("resource:///modules/jsmime.jsm");
- 
  var { ExtensionCommon } = ChromeUtils.import("resource://gre/modules/ExtensionCommon.jsm");
- 
-
  var { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
 
  
@@ -40,8 +32,7 @@
          async listAttachments(messageId) {
            // Get an nsIMsgDBHdr from a MessageHeader:
            let msgHdr = context.extension.messageManager.get(messageId);
-           console.log("msgHdr", msgHdr);
- 
+
            if (!msgHdr) {
              throw new ExtensionError(`Message not found: ${messageId}.`);
            }
@@ -60,9 +51,7 @@
          },
          async getAttachmentFile(messageId, partName) {
            // Get an nsIMsgDBHdr from a MessageHeader:
-           let msgHdr = context.extension.messageManager.get(messageId);
-           console.log("msgHdr", msgHdr);
-           
+           let msgHdr = context.extension.messageManager.get(messageId);           
            
            if (!msgHdr) {
              throw new ExtensionError(`Message not found: ${messageId}.`);
@@ -90,7 +79,6 @@
                `Part ${partName} not found in message ${messageId}.`
              );
            }
-           console.log("attachment", attachment);
            let aSecurityFlags =
              Ci.nsILoadInfo.SEC_ALLOW_CROSS_ORIGIN_DATA_IS_NULL || // for TB Beta 80 and newer
              Ci.nsILoadInfo.SEC_ALLOW_CROSS_ORIGIN_SEC_CONTEXT_IS_NULL; // for TB 78
