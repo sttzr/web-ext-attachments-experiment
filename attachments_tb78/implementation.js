@@ -7,6 +7,7 @@
  var { MsgHdrToMimeMessage } = ChromeUtils.import("resource:///modules/gloda/MimeMessage.jsm");
  var { ExtensionCommon } = ChromeUtils.import("resource://gre/modules/ExtensionCommon.jsm");
  var { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
+ var { MailServices } = ChromeUtils.import("resource:///modules/MailServices.jsm");
 
  
  Cu.importGlobalProperties(["fetch", "File"]);
@@ -107,6 +108,81 @@
            });
  
            return new File([byteArray], attachment.name);
+         },
+         async openAttachment(messageId, partName) {
+           // Get an nsIMsgDBHdr from a MessageHeader:
+           let msgHdr = context.extension.messageManager.get(messageId);           
+           
+           if (!msgHdr) {
+             throw new ExtensionError(`Message not found: ${messageId}.`);
+           }
+ 
+           // It's not ideal to have to call MsgHdrToMimeMessage here but we
+           // need the name of the attached file, plus this also gives us the
+           // URI without having to jump through a lot of hoops.
+           let attachment = await new Promise(resolve => {
+             MsgHdrToMimeMessage(
+               msgHdr,
+               null,
+               (_msgHdr, mimeMsg) => {
+                 resolve(
+                   mimeMsg.allAttachments.find(a => a.partName == partName)
+                 );
+               },
+               true,
+               { examineEncryptedParts: true, partsOnDemand: true }
+             );
+           });
+ 
+           if (!attachment) {
+             throw new ExtensionError(
+               `Part ${partName} not found in message ${messageId}.`
+             );
+           }
+           console.log("attachment", attachment);
+           console.log("msgHdr", msgHdr);
+           /*
+           // Not needed:
+           let mimeMsg = await new Promise(resolve => {
+            MsgHdrToMimeMessage(
+              msgHdr,
+              null,
+              (_msgHdr, mimeMsg) => {
+                resolve(
+                  mimeMsg
+                );
+              },
+              true,
+              { examineEncryptedParts: true, partsOnDemand: true }
+            );
+            
+          });
+          console.log("mimeMsg", mimeMsg);
+          */
+          let messageURI = msgHdr.folder.getUriForMsg(msgHdr); // found this on https://searchfox.org/comm-central/source/mail/extensions/openpgp/content/modules/stdlib/msgHdrUtils.jsm#74
+          console.log("messageURI", messageURI);
+
+          let messenger = Cc["@mozilla.org/messenger;1"].createInstance(
+            Ci.nsIMessenger
+          );
+          console.log("messenger", messenger);
+
+          const encodedFilename = encodeURIComponent(attachment.name);
+          console.log("encodedFilename", encodedFilename);
+
+           try {
+            messenger.openAttachment(
+              attachment.contentType,
+              attachment.url,
+              encodedFilename,
+              messageURI,
+              attachment.isExternal
+            );
+            console.log("yeah! did the attachment open?");
+           } catch (error) {
+             console.log("ooh", error);
+           }
+           
          }
        },
      };

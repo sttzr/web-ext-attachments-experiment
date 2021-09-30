@@ -81,6 +81,11 @@ browser.runtime.onMessage.addListener((data, sender) => {
       addInlinePreviews(tabId, message.id);
     });
   }
+  // Handle popup-preview requests.
+  if (data.command == "openPopupPreview" && data.partName != null) {
+    // Open the requested attachment
+    browser.attachments_tb78.openAttachment(data.messageId, data.partName);
+  }
 });
 
 browser.messageDisplayScripts.register({ js: [{ file: "initial.js" }] });

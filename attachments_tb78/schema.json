@@ -58,6 +58,23 @@
             "pattern": "^\\d+(\\.\\d+)*$"
           }
         ]
+      },
+      {
+        "name": "openAttachment",
+        "type": "function",
+        "description": "Opens the attachment using Thunderbirds open dialog.",
+        "async": true,
+        "parameters": [
+          {
+            "name": "messageId",
+            "type": "integer"
+          },
+          {
+            "name": "partName",
+            "type": "string",
+            "pattern": "^\\d+(\\.\\d+)*$"
+          }
+        ]
       }
     ]
   }
